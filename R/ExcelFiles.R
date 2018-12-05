@@ -13,7 +13,7 @@
 #' @example 
 #' @export 
 
-excelFiles <- function(dat = calculations, mypath = , rewrite = TRUE){
+excelFiles <- function(dat, mypath, rewrite = TRUE){
   excelFile <- createWorkbook()
   
   addWorksheet(excelFile, "Raw Data")

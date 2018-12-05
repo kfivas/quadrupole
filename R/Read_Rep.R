@@ -9,7 +9,7 @@
 #' @example
 #' @export 
 
-read_rep <- function(file = ){
+read_rep <- function(file){
   dat <- read_lines(file = file)
   
   # find each sample id chunk
