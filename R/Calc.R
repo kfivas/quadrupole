@@ -9,7 +9,7 @@
 #' @title Calculate and go through the quadrapole data chemical analysis
 #' @param dat is the .csv file made from the read_rep() 
 #' @param weights is the .csv file with all the chemical weights
-#' @example 
+#' @example calc(dat, weights)
 #' @export 
 
 calc <- function(dat, weights){
@@ -18,9 +18,14 @@ calc <- function(dat, weights){
     left_join(dat, by = "Sample ID")
   
   DF <- combineData %>%
-    mutate(dfWeight = `Dissolver Wt` / `Sample Wt`, dilution100 = `1:100 Dil + Samp Wt` / `1:100 SampleWt`, dilution5000 = `1:5000 Dil + Samp Wt` / `1:5000 SampleWt`, 
-           dilution500k = `1:500k Dil + Samp Wt` / `1:500k SampleWt`, DilutionFactor = (dilution100 * dilution5000 * dilution500k)) %>%
-    select("Sample ID", "Symbol", "Analyte", "Mass", "Conc. Mean", "dfWeight", "dilution100", "dilution5000", "dilution500k", "DilutionFactor")
+    mutate(dfWeight = `Dissolver Wt` / `Sample Wt`, 
+           dilution10 = `1:10 Dil + Samp Wt` / `1:10 SampleWt`, 
+           dilution100 = `1:100 Dil + Samp Wt` / `1:100 SampleWt`, 
+           dilution1000 = `1:1000 Dil + Samp Wt` / `1:1000 SampleWt`, 
+           dilution5000 = `1:5000 Dil + Samp Wt` / `1:5000 SampleWt`, 
+           dilution500k = `1:500k Dil + Samp Wt` / `1:500k SampleWt`, 
+           DilutionFactor = (dilution10 * dilution100 * dilution1000 * dilution5000 * dilution500k)) %>%
+    select("Sample ID", "Symbol", "Analyte", "Mass", "Conc. Mean", "dfWeight", "dilution10", "dilution100", "dilution1000", "dilution5000", "dilution500k", "DilutionFactor")
   
   
   
@@ -42,17 +47,17 @@ calc <- function(dat, weights){
     filter(!(Symbol %in% "|>")) %>%
     filter(`Sample ID` %in% "Rinse") %>%
     select("Sample ID", "Symbol", "Analyte", "Mass", "Conc. SD") %>%
-    mutate(RinseSD3 = `Conc. SD` * 3, RinseSD10 = `Conc. SD` * 10) %>%
+    mutate(RinseSD3 = `Conc. SD` * 3, RinseSD15 = `Conc. SD` * 15) %>%
     mutate_if(is.numeric, signif, digits=3) %>%
-    select("Analyte", "Symbol", "Mass", "Conc. SD", "RinseSD3", "RinseSD10")
+    select("Analyte", "Symbol", "Mass", "Conc. SD", "RinseSD3", "RinseSD15")
   
   
   
   MQL <- DF %>%
     filter(!(Symbol %in% "|>")) %>%
     left_join(IQL, by = c("Analyte", "Symbol", "Mass")) %>%
-    mutate(MQLinSamples = RinseSD10 * DilutionFactor * dfWeight / 1000) %>%
-    mutate_if(is.numeric, signif, digits=3) %>%
+    mutate(MQLinSamples = RinseSD15 * DilutionFactor * dfWeight / 1000) %>%
+    mutate_if(is.numeric, signif, digits=1) %>%
     select("Sample ID", "Symbol", "Analyte", "Mass", "MQLinSamples")
   
   
@@ -74,11 +79,12 @@ calc <- function(dat, weights){
   #Ask what columns they want to see. Can use mutate() if needed.
   #Possibly might need to use the "numbers" data for data with MQL.vs.Sample Concentration with the less than sign. We'll test it out with another datset later.
   #Because we don't want the averages of the samples with the < sign. 
-  averages <- MQL.vs.SampleCon %>%
+  averages <- numbers %>%
     separate(`Sample ID`, c("Sample", "Rep", "Dilution"), sep = " ") %>%
     group_by(Sample, Analyte, Mass) %>%
     summarise(Average = mean(MQL.vs.SampleConc), SD = sd(MQL.vs.SampleConc), 
               RSD = SD/Average * 100) %>%
+    mutate_if(is.numeric, signif, digits=3) %>%
     filter(!(Sample %in% "Diss"))
   
   
@@ -108,7 +114,7 @@ calc <- function(dat, weights){
   errorOnly <- errorOnlyData%>%
     mutate(Error = mround(Error)) %>%
     signif(digits = 3) %>%
-    mutate(Error = ifelse(Error > 35, "N/A", paste("±", Error, "%")))
+    mutate(Error = ifelse(Error > 35, "N/A", paste("\u00b1", Error, "%")))
   
   #Do we want Conc.RSD and Actual Error? Or just Error%?
   error <- cbind(errors, errorOnly)
