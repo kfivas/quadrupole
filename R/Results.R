@@ -21,7 +21,7 @@ results <- function(file_in = NULL, weights = NULL, file_out = NULL){
   
   weights <- read_csv(weights)
   
-  calculations <- calc(dat, weights)
+  calculations <- quadrupole::calc(dat, weights)
   print("calculations done")
   
   excelFiles(calculations, mypath = file_out)
