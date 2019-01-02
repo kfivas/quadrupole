@@ -18,6 +18,8 @@ results <- function(file_in = NULL, weights = NULL, file_out = NULL){
   dat <- quadrupole::read_rep(file_in)
   print("File digested")
   
+  weights <- read_csv(weights)
+  
   calculations <- quadrupole::calc(dat, weights)
   print("calculations done")
   
