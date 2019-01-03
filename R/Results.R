@@ -13,7 +13,6 @@ results <- function(file_in = NULL, weights = NULL, file_out = NULL){
   require(fs)
   require(openxlsx)
   require(stringr)
-  require(quadrupole)
   
   dat <- quadrupole::read_rep(file_in)
   print("File digested")
