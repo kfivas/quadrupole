@@ -11,7 +11,7 @@
 #' @param Rewrite lets the user decide if the function will be allowed to 
 #' overwrite an already used file. Entered as a logical.
 #' @example excelFiles(dat, mypath = "", rewrite = TRUE)
-#' @export 
+#' @export  
 
 excelFiles <- function(dat = calculations, mypath = "Testing.xlsx", rewrite = TRUE){
   excelFile <- createWorkbook()

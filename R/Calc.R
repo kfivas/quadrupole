@@ -10,7 +10,7 @@
 #' @param dat is the .csv file made from the read_rep() 
 #' @param weights is the .csv file with all the chemical weights
 #' @example calc(dat, weights)
-#' @export 
+#' @export  
 
 calc <- function(dat, weights){
   

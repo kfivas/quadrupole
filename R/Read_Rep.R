@@ -7,7 +7,7 @@
 #' @title Read in rep files from quadrapole machine
 #' @param file = path to the .rep file you need. Entered as a string.
 #' @example read_rep(file = "")
-#' @export 
+#' @export  
 
 read_rep <- function(file = "RawData/casting pins_102301-303_u_9-5-18.rep"){
   dat <- read_lines(file = file)

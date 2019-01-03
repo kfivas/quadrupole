@@ -4,7 +4,7 @@
 #' @param weights = a path to the .csv file with the needed weights. Entered as a string.
 #' @param file_out = a string name of what you want the function to output the file as. Entered as a string.
 #' @example results(file_in = "", weights = , file_out)
-#' @export 
+#' @export  
 
 results <- function(file_in = NULL, weights = NULL, file_out = NULL){
   require(mosaic)
