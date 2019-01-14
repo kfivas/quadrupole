@@ -1,4 +1,6 @@
 
+# The Results function runs the Read_rep, Calc, and ExcelFiles functions all together. 
+
 #' @title Combines the read_rep, calc, and excelfiles Functions.
 #' @param file_in = path to the .rep file you need. Entered as a string.
 #' @param weights = a path to the .csv file with the needed weights. Entered as a string.
