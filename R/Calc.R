@@ -138,8 +138,7 @@ calc <- function(dat, weights){
   #Not sure if the ifelse statement will work in data that actually has NA's. This needs furthur testing
   results <- averages %>%
     right_join(highestError) %>%
-    select("Sample", "Analyte", "Mass", "Average", "Highest Error") %>%
-    mutate(Average = ifelse(`Highest Error` == "N/A", paste("<", Average), Average))
+    select("Sample", "Analyte", "Mass", "Average", "Highest Error")
   
   files <- list("Raw Data" = dat, "Dilution Factor" = DF, "Solution Concentration" = solutionConc, "Sample Concentration" = sampleConc, "IQL" = IQL, 
                 "MQL" = MQL, "MQL vs SampleConc" = MQL.vs.SampleCon, "Averages" = averages, "Error %" = error, "Results" = results)
