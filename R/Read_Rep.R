@@ -9,7 +9,7 @@
 #' @example read_rep(file = "")
 #' @export  
 
-read_rep <- function(file = "RawData/casting pins_102301-303_u_9-5-18.rep"){
+read_rep <- function(file = NULL){
   dat <- read_lines(file = file)
   
   # find each sample id chunk
