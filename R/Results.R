@@ -27,3 +27,4 @@ results <- function(file_in = NULL, weights = NULL, file_out = NULL){
   excelFiles(calculations, mypath = file_out)
   print(paste0("Excel file created at ", file_out))
 }
+
