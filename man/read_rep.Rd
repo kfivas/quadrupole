@@ -4,7 +4,7 @@
 \alias{read_rep}
 \title{Read in rep files from quadrapole machine}
 \usage{
-read_rep(file = "RawData/casting pins_102301-303_u_9-5-18.rep")
+read_rep(file = NULL)
 }
 \arguments{
 \item{file}{= path to the .rep file you need. Entered as a string.}

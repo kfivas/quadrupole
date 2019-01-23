@@ -4,8 +4,7 @@
 \alias{excelFiles}
 \title{Create excel file for the quadrapole calculations and data}
 \usage{
-excelFiles(dat = calculations, mypath = "Testing.xlsx",
-  rewrite = TRUE)
+excelFiles(dat = calculations, mypath = NULL, rewrite = TRUE)
 }
 \arguments{
 \item{dat}{the calculations outputted from the `calc()` function}
