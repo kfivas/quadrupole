@@ -34,7 +34,6 @@ calc <- function(dat, weights){
     select("Sample ID", "Analyte", "Mass", "Conc. Mean")
   
   
-  
   sampleConc <- DF%>%
     mutate(Conc.in.Samples = `Conc. Mean` * DilutionFactor * dfWeight / 1000) %>%
     mutate_if(is.numeric, signif, digits=3) %>%
@@ -58,14 +57,16 @@ calc <- function(dat, weights){
     left_join(IQL, by = c("Analyte", "Symbol", "Mass")) %>%
     mutate(MQLinSamples = RinseSD15 * DilutionFactor * dfWeight / 1000) %>%
     mutate_if(is.numeric, signif, digits=1) %>%
-    select("Sample ID", "Symbol", "Analyte", "Mass", "MQLinSamples")
+    select("Sample ID", "Symbol", "Analyte", "Mass", "MQLinSamples") %>%
+    mutate(Unit = "ug/g")
   
   
   
   
   MQL.vs.SampleCon <- MQL %>%
     full_join(sampleConc) %>%
-    mutate(MQL.vs.SampleConc = ifelse(Conc.in.Samples > MQLinSamples, Conc.in.Samples, paste("<", MQLinSamples, sep = "")))
+    mutate(MQL.vs.SampleConc = ifelse(Conc.in.Samples > MQLinSamples, Conc.in.Samples, paste("<", MQLinSamples, sep = ""))) %>%
+    mutate(Unit = "ug/g")
   
   
   
@@ -82,7 +83,7 @@ calc <- function(dat, weights){
   averages <- numbers %>%
     separate(`Sample ID`, c("Sample", "Rep", "Dilution"), sep = " ") %>%
     group_by(Sample, Analyte, Mass) %>%
-    summarise(Average = mean(MQL.vs.SampleConc), SD = sd(MQL.vs.SampleConc), 
+    summarise(Average = mean(MQL.vs.SampleConc), Unit = "ug/g", SD = sd(MQL.vs.SampleConc), 
               RSD = SD/Average * 100) %>%
     mutate_if(is.numeric, signif, digits=3) %>%
     filter(!(Sample %in% "Diss"))
@@ -114,19 +115,34 @@ calc <- function(dat, weights){
   errorOnly <- errorOnlyData%>%
     mutate(Error = mround(Error)) %>%
     signif(digits = 3) %>%
-    mutate(Error = ifelse(Error > 35, "N/A", paste("\u00b1", Error, "%")))
+    mutate(Error = ifelse(Error > 35, "N/A", paste("±", Error, "%")))
   
   #Do we want Conc.RSD and Actual Error? Or just Error%?
   error <- cbind(errors, errorOnly)
   
   colnames(error) [5] <- "Actual Error"
   
+  error2 <- error %>%
+    left_join(MQL.vs.SampleCon, by = c("Sample ID", "Analyte", "Mass")) %>%
+    mutate(Error = case_when(
+      str_detect(`MQL.vs.SampleConc`, "<") ~ "N/A", T ~ `Error`
+    )) %>%
+    select("Sample ID", "Analyte", "Mass", "Conc. RSD", "Actual Error", "Error")
+  
+  
+  error2 <- error %>%
+    left_join(MQL.vs.SampleCon, by = c("Sample ID", "Analyte", "Mass")) %>%
+    mutate(Error = case_when(
+      str_detect(`MQL.vs.SampleConc`,"<")~"N/A",
+      T ~ `Error`
+    )) %>%
+    select("Sample ID", "Analyte", "Mass", "Conc. RSD", "Actual Error", "Error")
   
   
   #max() is not working correctly
   #We want the highest error% per Sample. 
   #If there's an NA, NA is the highest
-  highestError <- error %>%
+  highestError <- error2 %>%
     separate(`Sample ID`, c("Sample", "Rep", "Dilution"), sep = " ") %>%
     group_by(Sample, Analyte, Mass) %>%
     arrange(desc(`Actual Error`)) %>%
@@ -138,9 +154,37 @@ calc <- function(dat, weights){
   #Not sure if the ifelse statement will work in data that actually has NA's. This needs furthur testing
   results <- averages %>%
     right_join(highestError) %>%
-    select("Sample", "Analyte", "Mass", "Average", "Highest Error")
+    mutate(Unit = "ug/g") %>%
+    select("Sample", "Analyte", "Mass", "Average", "Unit", "Highest Error") %>%
+    mutate(Average = ifelse(`Highest Error` == "N/A", paste("<", Average), as.character(Average)))
+  
+  
+  #str_to_lower() makes it not case sensitive. For example blk also works for Blk.
+  blanks <- dat %>%
+    select("Sample ID", "Analyte", "Mass", "Meas. Intens. Mean") %>%
+    filter(str_detect(str_to_lower(`Sample ID`), "blk|blank|rinse")) %>%
+    mutate_if(is.numeric, signif, digits = 5)
+  
+  
+  
+  standards <- dat %>%
+    filter(Symbol %in% "|>") %>%
+    select("Sample ID", "Analyte", "Mass", "Meas. Intens. Mean") %>%
+    mutate(Average = mean(`Meas. Intens. Mean`)) %>%
+    mutate(`% Difference` = (`Meas. Intens. Mean` - Average) / Average) %>%
+    mutate(`-10%` = Average - (Average * .1)) %>%
+    mutate(`+10%` = Average + (Average * .1)) %>%
+    mutate(`-20%` = Average - (Average * .2)) %>%
+    mutate(`+20%` = Average + (Average * .2))
+  
+  
+  
   
   files <- list("Raw Data" = dat, "Dilution Factor" = DF, "Solution Concentration" = solutionConc, "Sample Concentration" = sampleConc, "IQL" = IQL, 
-                "MQL" = MQL, "MQL vs SampleConc" = MQL.vs.SampleCon, "Averages" = averages, "Error %" = error, "Results" = results)
+                "MQL" = MQL, "MQL vs SampleConc" = MQL.vs.SampleCon, "Averages" = averages, 
+                "Error %" = error, "Results" = results, "Blanks" = blanks, 
+                "Internal Standards" = standards)
   files
+  
+  
 }

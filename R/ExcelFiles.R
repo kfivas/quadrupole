@@ -26,6 +26,8 @@ excelFiles <- function(dat = calculations, mypath = NULL, rewrite = TRUE){
   addWorksheet(excelFile, "Averages")
   addWorksheet(excelFile, "Error %")
   addWorksheet(excelFile, "Results")
+  addWorksheet(excelFile, "Blanks")
+  addWorksheet(excelFile, "Internal Standards")
   
   writeData(excelFile, sheet = "Raw Data", x = dat$`Raw Data`)
   writeData(excelFile, sheet = "Dilution Factor", x = dat$`Dilution Factor`)
@@ -37,6 +39,9 @@ excelFiles <- function(dat = calculations, mypath = NULL, rewrite = TRUE){
   writeData(excelFile, sheet = "Averages", x = dat$Averages)
   writeData(excelFile, sheet = "Error %", x = dat$`Error %`)
   writeData(excelFile, sheet = "Results", x = dat$Results)
+  writeData(excelFile, sheet = "Blanks", x = dat$Blanks)
+  writeData(excelFile, sheet = "Internal Standards", x = dat$`Internal Standards`)
+  
   
   saveWorkbook(excelFile, mypath, overwrite = rewrite)
   
