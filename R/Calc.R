@@ -130,15 +130,6 @@ calc <- function(dat, weights){
     select("Sample ID", "Analyte", "Mass", "Conc. RSD", "Actual Error", "Error")
   
   
-  error2 <- error %>%
-    left_join(MQL.vs.SampleCon, by = c("Sample ID", "Analyte", "Mass")) %>%
-    mutate(Error = case_when(
-      str_detect(`MQL.vs.SampleConc`,"<")~"N/A",
-      T ~ `Error`
-    )) %>%
-    select("Sample ID", "Analyte", "Mass", "Conc. RSD", "Actual Error", "Error")
-  
-  
   #max() is not working correctly
   #We want the highest error% per Sample. 
   #If there's an NA, NA is the highest
