@@ -6,10 +6,11 @@
 
 
 #' @title Create excel file for the quadrapole calculations and data
+#'
 #' @param dat the calculations outputted from the `calc()` function
+#' @param rewrite 
 #' @param mypath will determine where we save the excel file. Entered as a string.
-#' @param Rewrite lets the user decide if the function will be allowed to 
-#' overwrite an already used file. Entered as a logical.
+#'
 #' @example excelFiles(dat, mypath = "", rewrite = TRUE)
 #' @export  
 

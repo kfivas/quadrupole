@@ -2,9 +2,11 @@
 # The Results function runs the Read_rep, Calc, and ExcelFiles functions all together. 
 
 #' @title Combines the read_rep, calc, and excelfiles Functions.
+#'
 #' @param file_in = path to the .rep file you need. Entered as a string.
 #' @param weights = a path to the .csv file with the needed weights. Entered as a string.
 #' @param file_out = a string name of what you want the function to output the file as. Entered as a string.
+#'
 #' @example results(file_in = "", weights = , file_out)
 #' @export  
 

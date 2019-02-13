@@ -5,7 +5,9 @@
 # Once the data is beautifully organized in a .csv file, the columns are set to either numeric or character as needed. 
 
 #' @title Read in rep files from quadrapole machine
+#'
 #' @param file = path to the .rep file you need. Entered as a string.
+#'
 #' @example read_rep(file = "")
 #' @export  
 
