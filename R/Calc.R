@@ -149,7 +149,7 @@ calc <- function(dat, weights){
   errorOnly <- errorOnlyData %>%
     mutate(Error = mround(Error)) %>%
     signif(digits = 3) %>%
-    mutate(Error = ifelse(Error > 35, "N/A", paste("0xB1", Error, "%")))
+    mutate(Error = ifelse(Error > 35, "N/A", str_c("0xB1", Error, "%")))
   #Final for error%
   error <- cbind(errors %>%
                    rename("Actual Error" = Error),
