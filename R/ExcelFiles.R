@@ -19,29 +19,26 @@ excelFiles <- function(dat = calculations, mypath = NULL, rewrite = TRUE){
   
   addWorksheet(excelFile, "Raw Data")
   addWorksheet(excelFile, "Dilution Factor")
-  addWorksheet(excelFile, "Solution Concentration")
-  addWorksheet(excelFile, "Sample Concentration")
   addWorksheet(excelFile, "IQL")
   addWorksheet(excelFile, "MQL")
   addWorksheet(excelFile, "MQL vs SampleConc")
   addWorksheet(excelFile, "Averages")
   addWorksheet(excelFile, "Error %")
   addWorksheet(excelFile, "Results")
-  addWorksheet(excelFile, "Blanks")
   addWorksheet(excelFile, "Internal Standards")
+  
   
   writeData(excelFile, sheet = "Raw Data", x = dat$`Raw Data`)
   writeData(excelFile, sheet = "Dilution Factor", x = dat$`Dilution Factor`)
-  writeData(excelFile, sheet = "Solution Concentration", x = dat$`Solution Concentration`)
-  writeData(excelFile, sheet = "Sample Concentration", x = dat$`Sample Concentration`)
   writeData(excelFile, sheet = "IQL", x = dat$IQL)
   writeData(excelFile, sheet = "MQL", x = dat$MQL)
   writeData(excelFile, sheet = "MQL vs SampleConc", x = dat$`MQL vs SampleConc`)
   writeData(excelFile, sheet = "Averages", x = dat$Averages)
   writeData(excelFile, sheet = "Error %", x = dat$`Error %`)
   writeData(excelFile, sheet = "Results", x = dat$Results)
-  writeData(excelFile, sheet = "Blanks", x = dat$Blanks)
   writeData(excelFile, sheet = "Internal Standards", x = dat$`Internal Standards`)
+  insertPlot(excelFile, sheet = "Internal Standards", x = dat$confPlots)
+  
   
   
   saveWorkbook(excelFile, mypath, overwrite = rewrite)
