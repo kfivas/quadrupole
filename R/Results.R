@@ -9,7 +9,6 @@
 #'
 #' @example results(file_in = "", weights = , file_out)
 #' @export  
-
 results <- function(file_in = NULL, weights = NULL, file_out = NULL){
   require(mosaic)
   require(tidyverse)
