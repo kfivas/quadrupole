@@ -11,8 +11,7 @@ excelFiles(dat = calculations, mypath = NULL, rewrite = TRUE)
 
 \item{mypath}{will determine where we save the excel file. Entered as a string.}
 
-\item{Rewrite}{lets the user decide if the function will be allowed to 
-overwrite an already used file. Entered as a logical.}
+\item{rewrite}{}
 }
 \description{
 Create excel file for the quadrapole calculations and data
