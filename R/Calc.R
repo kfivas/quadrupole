@@ -149,7 +149,7 @@ calc <- function(dat, weights){
   errorOnly <- errorOnlyData %>%
     mutate(Error = mround(Error)) %>%
     signif(digits = 3) %>%
-    mutate(Error = ifelse(Error > 35, "N/A", str_c("+/-", Error, "%")))
+    mutate(Error = ifelse(Error > 35, "N/A", str_c("<00B1>", Error, "%")))
   #Final for error%
   error <- cbind(errors %>%
                    rename("Actual Error" = Error),
@@ -213,7 +213,7 @@ calc <- function(dat, weights){
     arrange(desc(Mass)) %>%
     group_by(Analyte) %>%
     mutate(Average = mean(`Meas. Intens. Mean`)) %>%
-    mutate(`% Difference` = (`Meas. Intens. Mean` - Average) / Average) %>%
+    mutate(`% Difference` = (Average - `Meas. Intens. Mean`) / Average * 100) %>%
     mutate(`-10%` = Average - (Average * .1)) %>%
     mutate(`+10%` = Average + (Average * .1)) %>%
     mutate(`-20%` = Average - (Average * .2)) %>%
@@ -247,7 +247,7 @@ calc <- function(dat, weights){
   
   
   
-  files <- list("Raw Data" = dat, "Dilution Factor" = DF, "Blanks/IQL" = IQL, "MQL" = MQL, 
+  files <- list("Raw Data" = dat, "Dilution Factor" = DF, "IQL" = IQL, "MQL" = MQL, 
                 "MQL vs SampleConc" = MQL.vs.SampleCon, "Averages" = addedAverages, "Error %" = error, 
                 "Results" = results, "Internal Standards" = standards, "Plots" = confPlots)
   files
