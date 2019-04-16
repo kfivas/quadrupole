@@ -146,11 +146,10 @@ calc <- function(dat, weights){
     base*ceiling(x/base) 
   } 
   
-  errorOnly <- errorOnlyData%>%
+  errorOnly <- errorOnlyData %>%
     mutate(Error = mround(Error)) %>%
     signif(digits = 3) %>%
-    mutate(Error = ifelse(Error > 35, "N/A", paste("±", Error, "%")))
-  
+    mutate(Error = ifelse(Error > 35, "N/A", str_c("+/-", Error, "%")))
   #Final for error%
   error <- cbind(errors %>%
                    rename("Actual Error" = Error),
@@ -250,7 +249,7 @@ calc <- function(dat, weights){
   
   files <- list("Raw Data" = dat, "Dilution Factor" = DF, "Blanks/IQL" = IQL, "MQL" = MQL, 
                 "MQL vs SampleConc" = MQL.vs.SampleCon, "Averages" = addedAverages, "Error %" = error, 
-                "Results" = results, "Internal Standards" = standards)
+                "Results" = results, "Internal Standards" = standards, "Plots" = confPlots)
   files
   
   

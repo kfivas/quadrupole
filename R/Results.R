@@ -9,7 +9,6 @@
 #'
 #' @example results(file_in = "", weights = , file_out = "")
 #' @export  
-
 results <- function(file_in = NULL, weights = NULL, file_out = NULL){
   require(mosaic)
   require(tidyverse)
@@ -17,6 +16,7 @@ results <- function(file_in = NULL, weights = NULL, file_out = NULL){
   require(fs)
   require(openxlsx)
   require(stringr)
+  require(quadrupole)
   
   dat <- quadrupole::read_rep(file_in)
   print("File digested")
@@ -24,7 +24,7 @@ results <- function(file_in = NULL, weights = NULL, file_out = NULL){
   weights <- read_csv(weights)
   
   calculations <- quadrupole::calc(dat, weights)
-  print("calculations done")
+  print("Calculations done")
   
   excelFiles(calculations, mypath = file_out)
   print(paste0("Excel file created at ", file_out))

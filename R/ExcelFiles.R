@@ -37,7 +37,8 @@ excelFiles <- function(dat = calculations, mypath = NULL, rewrite = TRUE){
   writeData(excelFile, sheet = "Error %", x = dat$`Error %`)
   writeData(excelFile, sheet = "Results", x = dat$Results)
   writeData(excelFile, sheet = "Internal Standards", x = dat$`Internal Standards`)
-  insertPlot(excelFile, sheet = "Internal Standards", x = dat$confPlots)
+  print(dat$Plots)
+  insertPlot(excelFile, sheet = "Internal Standards", xy = c("L", 2))
   
   
   
