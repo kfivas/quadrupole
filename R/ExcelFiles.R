@@ -14,7 +14,7 @@
 #' @example excelFiles(dat, mypath = "", rewrite = TRUE)
 #' @export  
 
-excelFiles <- function(dat = calculations, mypath = "jfcsSaltsPractice.xlsx", rewrite = TRUE){
+excelFiles <- function(dat = calculations, mypath = NULL, rewrite = TRUE){
   excelFile <- createWorkbook()
   
   addWorksheet(excelFile, "Raw Data")
