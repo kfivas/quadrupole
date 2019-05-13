@@ -146,10 +146,11 @@ calc <- function(dat, weights){
     base*ceiling(x/base) 
   } 
   
-  errorOnly <- errorOnlyData %>%
+  errorOnly <- errorOnlyData%>%
     mutate(Error = mround(Error)) %>%
     signif(digits = 3) %>%
-    mutate(Error = ifelse(Error > 35, "N/A", str_c("\u00B1", Error, "%")))
+    mutate(Error = ifelse(Error > 35, "N/A", paste("\u00B1", Error, "%")))
+  
   #Final for error%
   error <- cbind(errors %>%
                    rename("Actual Error" = Error),
@@ -213,7 +214,7 @@ calc <- function(dat, weights){
     arrange(desc(Mass)) %>%
     group_by(Analyte) %>%
     mutate(Average = mean(`Meas. Intens. Mean`)) %>%
-    mutate(`% Difference` = (Average - `Meas. Intens. Mean`) / Average * 100) %>%
+    mutate(`% Difference` = signif((Average - `Meas. Intens. Mean`) / Average * 100, digits = 2)) %>%
     mutate(`-10%` = Average - (Average * .1)) %>%
     mutate(`+10%` = Average + (Average * .1)) %>%
     mutate(`-20%` = Average - (Average * .2)) %>%
@@ -221,6 +222,16 @@ calc <- function(dat, weights){
     mutate(Average = case_when(
       row_number() == 1 ~ Average
     ))
+  
+  
+  #standards%>%
+  # mutate(new_wow = case_when(
+  #  abs(`% Difference`) >= 20 ~ `% Difference`,
+  # abs(`% Difference`) >= 10 ~ `% Difference`,
+  #  ))
+  
+  
+  
   
   ablines <-  standards%>%
     distinct(Average, `-10%`, `+10%`, `-20%`, `+20%`)%>%
