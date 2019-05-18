@@ -26,6 +26,7 @@ excelFiles <- function(dat = calculations, mypath = NULL, rewrite = TRUE){
   addWorksheet(excelFile, "Error %")
   addWorksheet(excelFile, "Results")
   addWorksheet(excelFile, "Internal Standards")
+  addWorksheet(excelFile, "Check Standards")
   
   
   writeData(excelFile, sheet = "Raw Data", x = dat$`Raw Data`)
@@ -37,17 +38,22 @@ excelFiles <- function(dat = calculations, mypath = NULL, rewrite = TRUE){
   writeData(excelFile, sheet = "Error %", x = dat$`Error %`)
   writeData(excelFile, sheet = "Results", x = dat$Results)
   writeData(excelFile, sheet = "Internal Standards", x = dat$`Internal Standards`)
-  conditionalFormatting(excelFile,"Internal Standards",6,rows = (2:length(dat$`Internal Standards`)),
-                        rule = ">=10",style = createStyle(bgFill = "#fce50c"))
-  conditionalFormatting(excelFile,"Internal Standards",6,rows = (2:length(dat$`Internal Standards`)),
-                        rule = ">=20",style = createStyle(fontColour = "#0c0b0b",bgFill = "#b20303"))
-  conditionalFormatting(excelFile,"Internal Standards",6,rows = (2:length(dat$`Internal Standards`)),
-                        rule = "<=-20",style = createStyle(fontColour = "#0c0b0b",bgFill = "#b20303"))
-  conditionalFormatting(excelFile,"Internal Standards",6,rows = (2:length(dat$`Internal Standards`)), 
-                        rule = "<=-10",style = createStyle(bgFill = "#fce50c"))
+  conditionalFormatting(excelFile,"Internal Standards",6,
+                        rows = (2:length(dat$`Internal Standards`$`% Difference`)), 
+                        rule = ">=10",style = createStyle(bgFill= "#fce50c"))
+  conditionalFormatting(excelFile,"Internal Standards",6,
+                        rows = (2:length(dat$`Internal Standards`$`% Difference`)), 
+                        rule = ">=20",style = createStyle(bgFill= "#b20303"))
+  conditionalFormatting(excelFile,"Internal Standards",6,
+                        rows = (2:length(dat$`Internal Standards`$`% Difference`)), 
+                        rule = "<=-20",style = createStyle(bgFill= "#b20303"))
+  conditionalFormatting(excelFile,"Internal Standards",6,
+                        rows = (2:length(dat$`Internal Standards`$`% Difference`)), 
+                        rule = "<=-10",style = createStyle(bgFill= "#fce50c"))
   
   print(dat$Plots)
   insertPlot(excelFile, sheet = "Internal Standards", xy = c("L", 2))
+  writeData(excelFile, sheet = "Check Standards", x = dat$`Check Standards`)
   
   
   

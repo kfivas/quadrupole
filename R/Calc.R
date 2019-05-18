@@ -198,8 +198,8 @@ calc <- function(dat, weights){
   
   
   #str_to_lower() makes it not case sensitive. For example blk also works for Blk.
-  # blanks <- dat %>%
-  # filter(!(Symbol %in% "|>")) %>%
+  #blanks <- dat %>%
+  #filter(!(Symbol %in% "|>")) %>%
   #select("Sample ID", "Analyte", "Mass", "Meas. Intens. Mean", "Conc. Mean") %>%
   #filter(str_detect(str_to_lower(`Sample ID`), "blk|blank|rinse")) %>%
   #mutate_if(is.numeric, signif, digits = 5)
@@ -211,7 +211,7 @@ calc <- function(dat, weights){
   standards <- dat %>%
     filter(Symbol %in% "|>") %>%
     select("Sample ID", "Analyte", "Mass", "Meas. Intens. Mean") %>%
-    arrange(desc(Mass)) %>%
+    arrange(Mass) %>%
     group_by(Analyte) %>%
     mutate(Average = mean(`Meas. Intens. Mean`)) %>%
     mutate(`% Difference` = signif((Average - `Meas. Intens. Mean`) / Average * 100, digits = 2)) %>%
@@ -229,6 +229,11 @@ calc <- function(dat, weights){
   #  abs(`% Difference`) >= 20 ~ `% Difference`,
   # abs(`% Difference`) >= 10 ~ `% Difference`,
   #  ))
+  
+  
+  checkStandards <- dat %>% 
+    filter(str_detect(str_to_lower(`Sample ID`), "chk|std|check|standard")) %>%
+    select(`Sample ID`, Analyte, Mass, `Conc. Mean`)
   
   
   
@@ -260,7 +265,8 @@ calc <- function(dat, weights){
   
   files <- list("Raw Data" = dat, "Dilution Factor" = DF, "IQL" = IQL, "MQL" = MQL, 
                 "MQL vs SampleConc" = MQL.vs.SampleCon, "Averages" = addedAverages, "Error %" = error, 
-                "Results" = results, "Internal Standards" = standards, "Plots" = confPlots)
+                "Results" = results, "Internal Standards" = standards, "Check Standards" = checkStandards,
+                "Plots" = confPlots)
   files
   
   
