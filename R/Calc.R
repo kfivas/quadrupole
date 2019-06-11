@@ -21,13 +21,13 @@ calc <- function(dat, weights){
   
   DF <- combineData %>%
     mutate(dfWeight = `Dissolver Wt` / `Sample Wt`, 
-           dilution10 = `1:10 Dil + Samp Wt` / `1:10 SampleWt`, 
-           dilution100 = `1:100 Dil + Samp Wt` / `1:100 SampleWt`, 
-           dilution1000 = `1:1000 Dil + Samp Wt` / `1:1000 SampleWt`, 
-           dilution5000 = `1:5000 Dil + Samp Wt` / `1:5000 SampleWt`, 
-           dilution500k = `1:500k Dil + Samp Wt` / `1:500k SampleWt`, 
-           DilutionFactor = (dilution10 * dilution100 * dilution1000 * dilution5000 * dilution500k)) %>%
-    select("Sample ID", "Symbol", "Analyte", "Mass", "Conc. Mean", "dfWeight", "dilution10", "dilution100", "dilution1000", "dilution5000", "dilution500k", "DilutionFactor")
+           DilutionA = `Dilution A Dil + Samp Wt` / `Dilution A SampleWt`, 
+           DilutionB = `Dilution B Dil + Samp Wt` / `Dilution B SampleWt`, 
+           DilutionC = `Dilution C Dil + Samp Wt` / `Dilution C SampleWt`, 
+           DilutionD = `Dilution D Dil + Samp Wt` / `Dilution D SampleWt`, 
+           DilutionE = `Dilution E Dil + Samp Wt` / `Dilution E SampleWt`, 
+           DilutionFactor = (DilutionA * DilutionB * DilutionC * DilutionD * DilutionE)) %>%
+    select("Sample ID", "Symbol", "Analyte", "Mass", "Conc. Mean", "dfWeight", "DilutionA", "DilutionB", "DilutionC", "DilutionD", "DilutionE", "DilutionFactor")
   
   
   
@@ -162,7 +162,8 @@ calc <- function(dat, weights){
     left_join(averageRSD) %>%
     select(-Dilution, - `Actual Error`) %>%
     rename("Average RSD" = RSD) %>%
-    {.[,c(1:5,7:length(.),6)]}
+    {.[,c(1:5,7:length(.),6)]} %>%
+    rename("2 Sigma Error" = Error)
   
   
   
@@ -171,9 +172,9 @@ calc <- function(dat, weights){
   error2 <- error %>%
     left_join(MQL.vs.SampleCon, by = c("Sample", "Rep", "Analyte", "Mass")) %>%
     mutate(Error = case_when(
-      str_detect(`MQL.vs.SampleConc`, "<") ~ "N/A", T ~ `Error`
+      str_detect(`MQL.vs.SampleConc`, "<") ~ "N/A", T ~ `2 Sigma Error`
     )) %>%
-    select("Sample", "Rep", "Analyte", "Mass", "Conc. RSD", "Error")
+    select("Sample", "Rep", "Analyte", "Mass", "Conc. RSD", "2 Sigma Error")
   
   
   
@@ -182,7 +183,7 @@ calc <- function(dat, weights){
   #If there's an NA, NA is the highest
   highestError <- error2 %>%
     group_by(Sample, Analyte, Mass) %>%
-    summarise(`Highest Error` =  Error[1]) %>%
+    summarise(`Highest Error` =  `2 Sigma Error`[1]) %>%
     filter(!(Sample %in% "Diss"))
   
   
